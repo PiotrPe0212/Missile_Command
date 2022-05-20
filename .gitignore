@@ -9,3 +9,5 @@ Unity.2D.Psdimporter.Editor.csproj
 Unity.InternalAPIEngineBridge.001.csproj
 Unity.PlasticSCM.Editor.csproj
 Unity.VisualStudio.Editor.csproj
+Assembly-CSharp.csproj
+obj
