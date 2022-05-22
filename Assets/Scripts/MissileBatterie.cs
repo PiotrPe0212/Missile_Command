@@ -4,18 +4,19 @@ using UnityEngine;
 
 public class MissileBatterie : MonoBehaviour
 {
-    [SerializeField] private GameObject _pointer;
+    private GameObject _pointer;
     [SerializeField] private GameObject _missile;
-    [Range(1, 3)]
+
     public int BatterieNumber;
+
     private int _missilesNumber;
     private float _xPos;
     private float _yPos;
     private float _angle;
-    Vector3 currentEulerAngle;
-    Quaternion currentAngle;
     void Start()
     {
+
+        _pointer = GameObject.Find("Pointer");
         _xPos = transform.position.x;
         _yPos = transform.position.y;
 
@@ -30,12 +31,21 @@ public class MissileBatterie : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha3) && BatterieNumber == 3) FirePressed();
     }
 
+    public void NumberationAdd(int number)
+    {
+        BatterieNumber = number;
+    }
+
+    public void ImDoomed()
+    {
+        CitiesManager.Instance.BatteriesArray[BatterieNumber-1] = 0;
+    }
     private void FirePressed()
     {
         AngleCalculating();
         MissileCreating();
-   
-        }
+
+    }
     private void AngleCalculating()
     {
         float pointerXPos = _pointer.transform.position.x;
@@ -46,11 +56,9 @@ public class MissileBatterie : MonoBehaviour
     }
     private void MissileCreating()
     {
-        Vector3 currentEulerAngle = new Vector3(0f, 0f, _angle / Mathf.Deg2Rad);
-        currentAngle.eulerAngles = currentEulerAngle;
         GameObject missile;
-        missile = Instantiate(_missile, transform.position, currentAngle);
-        missile.transform.parent = transform;
+        missile = Instantiate(_missile, transform.position, Helpers.ZRotationChange(_angle));
+        missile.tag = "FriendMissile";
     }
 
 }

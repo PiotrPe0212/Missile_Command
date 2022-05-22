@@ -5,7 +5,7 @@ using UnityEngine;
 public class PointerController : MonoBehaviour
 {
     [SerializeField] private GameObject MissileTarget;
-    private float _pointerSpeed = 1;
+    private float _pointerSpeed = 5;
     private float _minXValue = -7.4f;
     private float _minYValue = -2.5f;
     private float _maxXValue = 7.4f;

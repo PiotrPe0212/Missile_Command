@@ -11,3 +11,4 @@ Unity.PlasticSCM.Editor.csproj
 Unity.VisualStudio.Editor.csproj
 Assembly-CSharp.csproj
 obj
+.vs

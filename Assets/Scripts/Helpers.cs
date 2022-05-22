@@ -4,20 +4,30 @@ using UnityEngine;
 
 public class Helpers : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+
+    private static readonly Dictionary<float, WaitForSeconds> WaitDictionary = new Dictionary<float, WaitForSeconds>();
+    public static WaitForSeconds WaitHelper(float time)
     {
-        
+        if (WaitDictionary.TryGetValue(time, out var wait)) return wait;
+
+        WaitDictionary[time] = new WaitForSeconds(time);
+        return WaitDictionary[time];
     }
 
-    // Update is called once per frame
-    void Update()
+    public static Quaternion ZRotationChange(float angle)
     {
-        
-    }
+        Quaternion currentAngle = Quaternion.identity;
+        Vector3 currentEulerAngle = new Vector3(0f, 0f, angle / Mathf.Deg2Rad);
+        currentAngle.eulerAngles = currentEulerAngle;
+        return currentAngle;
+    }  
 
-    public static float AbsVal(float number)
+    public static void OutofBorderCheck(Transform transform, GameObject gameObject)
     {
-        return Mathf.Abs(number);
+        float xPos = transform.position.x;
+        float yPos = transform.position.y;
+        if (xPos < -8.5f || xPos > 9f) Destroy(gameObject);
+        if (yPos < -6.5f || yPos > 6f) Destroy(gameObject);
+
     }
 }
