@@ -6,33 +6,32 @@ public class EnemySpawner : MonoBehaviour
 {
     [SerializeField] private GameObject _enemy;
     [SerializeField] private GameObject _enemyContainer;
-    public int wavesNumber = 8;
+    [SerializeField] private GameObject _enemyMissileContainer;
+    public int wavesNumber;
     private int _wavesCounter;
     private bool _waveEnd = false;
     private bool _waitController;
-    private bool _play = false;
     private void Awake()
     {
         GameManager.OnGameStateChange += LevelInitialization;
-        GameManager.OnGameStateChange += DestrtoyAfterEnd;
+        
     }
 
     private void OnDestroy()
     {
         GameManager.OnGameStateChange -= LevelInitialization;
-        GameManager.OnGameStateChange -= DestrtoyAfterEnd;
+      
 
     }
 
 
     void Update()
     {
-        if (!_play) return;
+        if (GameManager.Instance.State != GameManager.GameState.PlayGame) return;
         if (_waveEnd) {
             IsLevelCompliete();
-        }// ????????????????????????????????????????????????????????????
-        if (_waveEnd) return;
-        if (_waitController) return;
+        }
+        if (_waitController || _waveEnd) return;
         StartCoroutine(EnemyGenerating());
 
     }
@@ -62,24 +61,11 @@ public class EnemySpawner : MonoBehaviour
     {
         if (state == GameManager.GameState.PlayGame)
         {
-            _play = true;
+            wavesNumber = GameData.Instance.WavesNumber;
             ResetParams();
         }
-        else _play = false;
     }
 
-    private void DestrtoyAfterEnd(GameManager.GameState state)
-    {
-        if (state != GameManager.GameState.PlayGame)
-        {
-           
-                foreach (Transform child in _enemyContainer.transform)
-                {
-                    Destroy(child.gameObject);
-                }
-            
-        }
-    }
 
     private void ResetParams()
     {
@@ -90,7 +76,7 @@ public class EnemySpawner : MonoBehaviour
 
     private void IsLevelCompliete()
     {
-        if (_enemyContainer.transform.childCount == 0)
+        if (_enemyMissileContainer.transform.childCount == 0)
         {
             GameManager.Instance.GameStateUpdate(GameManager.GameState.NextLevel);
         }

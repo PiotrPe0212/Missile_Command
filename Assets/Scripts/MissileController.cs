@@ -7,7 +7,7 @@ public class MissileController : MonoBehaviour
     [SerializeField] private GameObject _explosion;
     [SerializeField] private LineController _lineController;
     private Transform _initPos;
-    private float _missileSpeed = 3;
+    private float _missileSpeed;
     void Start()
     {
         _initPos = transform;
@@ -16,6 +16,17 @@ public class MissileController : MonoBehaviour
         points[0] = _initPos;
         points[1] = transform;
         _lineController.SetLine(points);
+        if (gameObject.tag == "EnemyMissile")
+        {
+            _lineController.SetColor(Color.red);
+            _missileSpeed = GameData.Instance.CurrentBonus*0.7f;
+
+        }
+        if (gameObject.tag == "FriendMissile")
+        {
+            _lineController.SetColor(Color.yellow);
+            _missileSpeed = 5;
+        }
 
 
     }
@@ -37,6 +48,7 @@ public class MissileController : MonoBehaviour
         }
         else if (gameObject.tag == "EnemyMissile")
         {
+
             if (tag == "Explosion" ||
                 tag == "Building" ||
                 tag == "FriendMissile") Destruction(collision);
@@ -46,9 +58,10 @@ public class MissileController : MonoBehaviour
 
     private void Destruction(Collider2D collision)
     {
+        string tag = collision.tag;
         Instantiate(_explosion, transform.position, Quaternion.identity);
-        
-        if(collision.tag == "Building")collision.gameObject.BroadcastMessage("ImDoomed");
+        if (tag == "Explosion" || tag == "FriendMissile") GameData.Instance.AddPoints();
+        if (tag == "Building") collision.gameObject.BroadcastMessage("ImDoomed");
         Destroy(collision.gameObject);
         Destroy(gameObject);
     }

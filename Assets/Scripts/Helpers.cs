@@ -30,4 +30,12 @@ public class Helpers : MonoBehaviour
         if (yPos < -6.5f || yPos > 6f) Destroy(gameObject);
 
     }
+
+    public static void DestroyObjectsInContainer(GameObject parent)
+    {
+        foreach (Transform child in parent.transform)
+        {
+            Destroy(child.gameObject);
+        }
+    }
 }

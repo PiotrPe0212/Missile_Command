@@ -5,13 +5,16 @@ using UnityEngine;
 public class PointerController : MonoBehaviour
 {
     [SerializeField] private GameObject MissileTarget;
-    private float _pointerSpeed = 5;
+    [SerializeField] private GameObject _container;
+    private float _pointerSpeed = 6;
     private float _minXValue = -7.4f;
     private float _minYValue = -2.5f;
     private float _maxXValue = 7.4f;
     private float _maxYValue = 4.3f;
     private Vector2 _initialPointerPos;
     private Vector2 _actualPointerPos;
+
+
     void Start()
     {
         _initialPointerPos.x = (_minXValue + _maxXValue) / 2;
@@ -23,13 +26,12 @@ public class PointerController : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.Instance.State != GameManager.GameState.PlayGame) return;
         if (Input.GetKey(KeyCode.LeftArrow)) PointerMove("left");
         if (Input.GetKey(KeyCode.RightArrow)) PointerMove("right");
         if (Input.GetKey(KeyCode.UpArrow)) PointerMove("up");
         if (Input.GetKey(KeyCode.DownArrow)) PointerMove("down");
-        if (Input.GetKeyDown(KeyCode.Alpha1) ||
-            Input.GetKeyDown(KeyCode.Alpha2) ||
-            Input.GetKeyDown(KeyCode.Alpha3)) TargetCreating();
+       
 
     }
 
@@ -94,9 +96,12 @@ public class PointerController : MonoBehaviour
         }
     }
 
-    private void TargetCreating()
+    public  void TargetCreating()
     {
-        Instantiate(MissileTarget, _actualPointerPos, Quaternion.identity);
-
+        GameObject target;
+        target =Instantiate(MissileTarget, _actualPointerPos, Quaternion.identity);
+        target.transform.parent = _container.transform;
     }
+
+
 }

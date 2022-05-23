@@ -6,13 +6,13 @@ public class CitiesManager : MonoBehaviour
 {
     [SerializeField] private GameObject _city;
     [SerializeField] private GameObject _missileBatterie;
-    //[HideInInspector]
+    [SerializeField] private GameObject _container;
+   
     public int[] CitiesArray;
+    
     public int[] BatteriesArray;
     public static CitiesManager Instance;
-    private bool _gameOver;
     private bool _waitControll = false;
-    private bool _play;
     private void Awake()
     {
         Instance = this;
@@ -28,14 +28,14 @@ public class CitiesManager : MonoBehaviour
     {
         CitiesArray = new int[6];
         BatteriesArray = new int[3];
-        _play = false;
+
 
     }
 
     private void Update()
     {
+        if (GameManager.Instance.State != GameManager.GameState.PlayGame) return;
         if (_waitControll) return;
-        if (!_play) return;
         StartCoroutine(Routine());
 
     }
@@ -45,12 +45,16 @@ public class CitiesManager : MonoBehaviour
         float additionalDistance = 0;
         for (int i = 1; i <= length; i++)
         {
-            if (array[i - 1] == i) return;
-            if (i >= 4) additionalDistance = 2.5f;
-            GameObject createdObject;
-            createdObject = Instantiate(element, new Vector3(offset + i * distance + additionalDistance, -4, 0), Quaternion.identity);
-            array[i - 1] = i;
-            createdObject.BroadcastMessage("NumberationAdd", i);
+            print("tut" + i);
+            if (array[i-1] == 0)
+            {
+                if (i >= 4) additionalDistance = 2.5f;
+                GameObject createdObject;
+                createdObject = Instantiate(element, new Vector3(offset + i * distance + additionalDistance, -3.8f, 0), Quaternion.identity);
+                createdObject.transform.parent = _container.transform;
+                array[i - 1] = i;
+                createdObject.BroadcastMessage("NumerationAdd", i);
+            }
         }
     }
 
@@ -58,11 +62,12 @@ public class CitiesManager : MonoBehaviour
     {
         if (state == GameManager.GameState.PlayGame)
         {
+
             CitiesInit(CitiesArray.Length, -6.5f, 1.5f, CitiesArray, _city);
             CitiesInit(BatteriesArray.Length, -14, 7f, BatteriesArray, _missileBatterie);
-            _play = true;
+
         }
-        else _play = false;
+
     }
 
 
@@ -83,7 +88,6 @@ public class CitiesManager : MonoBehaviour
         }
         if (destroyedCities == 6)
         {
-            _gameOver = true;
             GameManager.Instance.GameStateUpdate(GameManager.GameState.Lose);
         }
         _waitControll = false;

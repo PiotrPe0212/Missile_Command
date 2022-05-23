@@ -6,7 +6,7 @@ public class LineController : MonoBehaviour
 {
     private LineRenderer _lineRenderer;
     private Transform[] points;
-
+    private Color _color;
     private void Awake()
     {
         _lineRenderer = GetComponent<LineRenderer>();
@@ -36,5 +36,17 @@ private void SettingPos(int i)
         _lineRenderer.SetPosition(i, points[i].position);
     }
 
+    public void SetColor(Color color)
+    {
+        this._color = color;
+        Gradient gradient = new Gradient();
+        gradient.SetKeys(
+            new GradientColorKey[] { new GradientColorKey(_color, 0.0f), new GradientColorKey(_color, 1.0f) },
+            new GradientAlphaKey[] { new GradientAlphaKey(1, 0.0f), new GradientAlphaKey(1, 1.0f) }
+        );
+        _lineRenderer.colorGradient = gradient;
+
+    }
+    
 }
 

@@ -5,7 +5,7 @@ using UnityEngine;
 public class CityController : MonoBehaviour
 {
     public int CityNumber;
-    public void NumberationAdd(int number)
+    public void NumerationAdd(int number)
     {
         CityNumber = number;
     }
@@ -13,5 +13,6 @@ public class CityController : MonoBehaviour
     public void ImDoomed()
     {
         CitiesManager.Instance.CitiesArray[CityNumber-1] = 0;
+        GameData.Instance.UpdateCitiesNumber();
     }
 }
