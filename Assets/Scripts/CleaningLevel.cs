@@ -4,11 +4,10 @@ using UnityEngine;
 
 public class CleaningLevel : MonoBehaviour
 {
-    [SerializeField] private GameObject _enemyContainer;
-    [SerializeField] private GameObject _enemyMissileContainer;
-    [SerializeField] private GameObject _friendMissileContainer;
-    [SerializeField] private GameObject _targetsContainer;
 
+    //Cleans a board after each level. 
+
+    [SerializeField] private GameObject[] _containers;
 
     private void Awake()
     {
@@ -24,13 +23,12 @@ public class CleaningLevel : MonoBehaviour
     {
         if (state != GameManager.GameState.PlayGame)
         {
-            CleaningFunction(_enemyContainer);
-            CleaningFunction(_enemyMissileContainer);
-            CleaningFunction(_friendMissileContainer);
-            CleaningFunction(_targetsContainer);
+            for (int i = 0; i < _containers.Length; i++)
+            {
+                CleaningFunction(_containers[i]);
+            }
 
         }
-
 
     }
 

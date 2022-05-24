@@ -4,15 +4,16 @@ using UnityEngine;
 
 public class CityController : MonoBehaviour
 {
-    public int CityNumber;
+    //Each city has a different number, when destroyed sends information to cities controller and data manager.
+    private int _cityNumber;
     public void NumerationAdd(int number)
     {
-        CityNumber = number;
+        _cityNumber = number;
     }
 
     public void ImDoomed()
     {
-        CitiesManager.Instance.CitiesArray[CityNumber-1] = 0;
+        CitiesManager.Instance.CitiesArray[_cityNumber-1] = 0;
         GameData.Instance.UpdateCitiesNumber();
     }
 }

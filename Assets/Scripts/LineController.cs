@@ -4,16 +4,28 @@ using UnityEngine;
 
 public class LineController : MonoBehaviour
 {
+    //Renders line after each missile.
+
     private LineRenderer _lineRenderer;
     private Transform[] points;
     private Color _color;
+
     private void Awake()
     {
         _lineRenderer = GetComponent<LineRenderer>();
         points = null;
         gameObject.SetActive(false);
     }
-    
+
+    private void Update()
+    {
+        if (points == null) return;
+        SettingPos(1);
+
+
+    }
+
+    //Setting line from points from the missile.
     public void SetLine(Transform[] points)
     {
         _lineRenderer.positionCount = points.Length;
@@ -23,19 +35,7 @@ public class LineController : MonoBehaviour
         gameObject.SetActive(true);
     }
 
-    
-    void Update()
-    {
-        if (points == null) return;
-            SettingPos(1);
-        
-        
-    }
-private void SettingPos(int i)
-    {
-        _lineRenderer.SetPosition(i, points[i].position);
-    }
-
+    //Setting color of the line depends on missile type.
     public void SetColor(Color color)
     {
         this._color = color;
@@ -47,6 +47,10 @@ private void SettingPos(int i)
         _lineRenderer.colorGradient = gradient;
 
     }
-    
+
+    private void SettingPos(int i)
+    {
+        _lineRenderer.SetPosition(i, points[i].position);
+    }
 }
 

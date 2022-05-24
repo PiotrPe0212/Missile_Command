@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class PointerController : MonoBehaviour
 {
+    //Handle pointer move (arrows), pointer working area, and creating targets for missiles. 
+
     [SerializeField] private GameObject MissileTarget;
     [SerializeField] private GameObject _container;
-    private float _pointerSpeed = 6;
+    [SerializeField] private float _pointerSpeed;
     private float _minXValue = -7.4f;
     private float _minYValue = -2.5f;
     private float _maxXValue = 7.4f;
@@ -17,6 +19,7 @@ public class PointerController : MonoBehaviour
 
     void Start()
     {
+        _pointerSpeed = 8;
         _initialPointerPos.x = (_minXValue + _maxXValue) / 2;
         _initialPointerPos.y = (_minYValue + _maxYValue) / 2;
         _actualPointerPos = _initialPointerPos;
@@ -31,14 +34,13 @@ public class PointerController : MonoBehaviour
         if (Input.GetKey(KeyCode.RightArrow)) PointerMove("right");
         if (Input.GetKey(KeyCode.UpArrow)) PointerMove("up");
         if (Input.GetKey(KeyCode.DownArrow)) PointerMove("down");
-       
+
 
     }
 
     private void PointerMove(string direction)
     {
         Vector3 directionVector = Vector3.zero;
-
 
         BorderLimits();
 
@@ -96,12 +98,11 @@ public class PointerController : MonoBehaviour
         }
     }
 
-    public  void TargetCreating()
+    public void TargetCreating()
     {
         GameObject target;
-        target =Instantiate(MissileTarget, _actualPointerPos, Quaternion.identity);
+        target = Instantiate(MissileTarget, _actualPointerPos, Quaternion.identity);
         target.transform.parent = _container.transform;
     }
-
 
 }

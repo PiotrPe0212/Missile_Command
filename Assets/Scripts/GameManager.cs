@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+
+    //Handle the current state of the game. Turns up and down panels and handle buttons actions.
     public static GameManager Instance;
     public GameState State;
     [SerializeField] private GameObject _menuPlane;
@@ -27,7 +29,6 @@ public class GameManager : MonoBehaviour
     public void GameStateUpdate(GameState newState)
     {
         State = newState;
-
         switch (newState)
         {
             case GameState.MainMenu:
@@ -47,7 +48,6 @@ public class GameManager : MonoBehaviour
             default:
                 throw new System.ArgumentOutOfRangeException(nameof(newState), newState, "Wrong argument!");
         }
-        print(newState);
         OnGameStateChange?.Invoke(newState);
     }
 
@@ -60,7 +60,7 @@ public class GameManager : MonoBehaviour
         Lose
     }
 
-
+    //Buttons
     public void PlayButton()
     {
         GameStateUpdate(GameState.PlayGame);

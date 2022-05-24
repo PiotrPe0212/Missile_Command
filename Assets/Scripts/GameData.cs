@@ -6,16 +6,17 @@ using UnityEngine.UI;
 
 public class GameData : MonoBehaviour
 {
+
+    //Stored most of the game data, seting scores, and bonus points. 
     public static GameData Instance;
 
     [SerializeField] private Text _scoreText;
     [SerializeField] private Text _bonusCities;
     [SerializeField] private Text _bonusMissiles;
-    public int CurrentLevel { get; private set; }
     public int CurrentBonus { get; private set; }
     public int WavesNumber { get; private set; }
-
-    public int Score { get; private set; }
+    private int _currentLevel;
+    private int _score;
     private int _totalMissilesNumber;
     private int _citiesNumber;
     private void Awake()
@@ -35,14 +36,13 @@ public class GameData : MonoBehaviour
         ResetValues();
     }
 
-
     private void ResetValues()
     {
         
         CurrentBonus = 1;
         WavesNumber = 5;
-        CurrentLevel = 0;
-        Score = 0;
+        _currentLevel = 0;
+        _score = 0;
         ScoreUpdate();
         NewLevelUpdate();
     }
@@ -51,26 +51,22 @@ public class GameData : MonoBehaviour
     {
         _totalMissilesNumber = 30;
         _citiesNumber = 6;
-        CurrentLevel++;
+        _currentLevel++;
     }
     private void RecalculateParameters()
     {
-        if (CurrentLevel % 5 == 0)
+        if (_currentLevel % 5 == 0)
         {
-            CurrentBonus = (int)Mathf.Round(CurrentLevel * 0.3f);
+            CurrentBonus = (int)Mathf.Round(_currentLevel * 0.3f);
             WavesNumber++;
         }
     }
 
+    //Added each time enemy missile gets destroyed (MissileController).
     public void AddPoints()
     {
-        Score += 10 * CurrentBonus;
+        _score += 10 * CurrentBonus;
         ScoreUpdate();
-    }
-
-    private void ScoreUpdate()
-    {
-        _scoreText.text = "SCORE: " + Score.ToString();
     }
 
     public void UpdateMissilesNumber(int number)
@@ -83,19 +79,29 @@ public class GameData : MonoBehaviour
         _citiesNumber--;
     }
 
+    private void ScoreUpdate()
+    {
+        _scoreText.text = "SCORE: " + _score.ToString();
+    }
+
     private void LevelWinUpdate(GameManager.GameState state)
     {
         if (state != GameManager.GameState.NextLevel) return;
-        int missilesBonus = _totalMissilesNumber * CurrentBonus*10;
-        int citiesBonus = _citiesNumber * CurrentBonus*50;
-        Score = Score + missilesBonus + citiesBonus;
+        BonusAdding();
         ScoreUpdate();
-        _bonusCities.text = citiesBonus.ToString();
-        _bonusMissiles.text = missilesBonus.ToString();
         NewLevelUpdate();
+        RecalculateParameters();
 
     }
-
+    //Bonuses after the end of the level.
+    private void BonusAdding()
+    {
+        int missilesBonus = _totalMissilesNumber * CurrentBonus * 10;
+        int citiesBonus = _citiesNumber * CurrentBonus * 50;
+        _score = _score + missilesBonus + citiesBonus;
+        _bonusCities.text = citiesBonus.ToString();
+        _bonusMissiles.text = missilesBonus.ToString();
+    }
     private void LevelLost(GameManager.GameState state)
     {
         if(state != GameManager.GameState.Lose) return;

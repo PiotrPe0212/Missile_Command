@@ -4,12 +4,15 @@ using UnityEngine;
 
 public class MissileBatterie : MonoBehaviour
 {
-    private GameObject _pointer;
-    [SerializeField] private GameObject _missile;
-    private GameObject _container;
+    // Handle friendly missiles shoot.
 
     public int BatterieNumber;
-    private int _missilesInitNumber = 10;
+    [SerializeField] private GameObject _missile;
+    private SpriteRenderer _spriteRenderer;
+    private PointerController _pointerController;
+    private GameObject _pointer;
+    private GameObject _container;
+    private int _missilesInitNumber;
     private int _missilesNumber;
     private float _xPos;
     private float _yPos;
@@ -26,15 +29,15 @@ public class MissileBatterie : MonoBehaviour
     }
     void Start()
     {
-
+        _spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
         _pointer = GameObject.Find("Pointer");
+        _pointerController = _pointer.GetComponent<PointerController>();
         _container = GameObject.Find("FriendMissilesContainer");
         _xPos = transform.position.x;
         _yPos = transform.position.y;
+        _missilesInitNumber = 10;
         _missilesNumber = _missilesInitNumber;
-
     }
-
 
     void Update()
     {
@@ -45,33 +48,23 @@ public class MissileBatterie : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha3) && BatterieNumber == 3) FirePressed();
     }
 
-    public void NumerationAdd(int number)
-    {
-        BatterieNumber = number;
-    }
-
-    public void ImDoomed()
-    {
-        CitiesManager.Instance.BatteriesArray[BatterieNumber - 1] = 0;
-        GameData.Instance.UpdateMissilesNumber(_missilesNumber);
-    }
     private void FirePressed()
     {
-        _pointer.GetComponent<PointerController>().TargetCreating();
+        _pointerController.TargetCreating();
         AngleCalculating();
         MissileCreating();
         _missilesNumber--;
         GameData.Instance.UpdateMissilesNumber(1);
         if (_missilesNumber == 0)
         {
-            gameObject.GetComponent<SpriteRenderer>().color = Color.red;
+            _spriteRenderer.color = Color.red;
         }
     }
+    //Calculating missile angle.
     private void AngleCalculating()
     {
         float pointerXPos = _pointer.transform.position.x;
         float pointerYPos = _pointer.transform.position.y;
-
         _angle = Mathf.Atan(Mathf.Abs(_xPos - pointerXPos) / Mathf.Abs(_yPos - pointerYPos));
         if (pointerXPos > _xPos) _angle = -_angle;
     }
@@ -88,8 +81,18 @@ public class MissileBatterie : MonoBehaviour
         if (state != GameManager.GameState.PlayGame) return;
         {
             _missilesNumber = _missilesInitNumber;
-            gameObject.GetComponent<SpriteRenderer>().color = Color.yellow;
+            _spriteRenderer.color = Color.yellow;
         }
     }
 
+    public void NumerationAdd(int number)
+    {
+        BatterieNumber = number;
+    }
+
+    public void ImDoomed()
+    {
+        CitiesManager.Instance.BatteriesArray[BatterieNumber - 1] = 0;
+        GameData.Instance.UpdateMissilesNumber(_missilesNumber);
+    }
 }

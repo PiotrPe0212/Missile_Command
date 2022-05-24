@@ -4,33 +4,46 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
+    //Control movement and shooting missiles of each enemy.
+
     [SerializeField] private GameObject _missile;
     private GameObject _container;
-    private bool waitController = false;
-    void Start()
+    private bool _waitControl;
+    private void Start()
     {
         _container = GameObject.Find("EnemyMissilesContainer");
+        _waitControl = false;
     }
 
-    
-    void Update()
+    private void FixedUpdate()
+    {
+        MoveFunction();
+        if (_waitControl) return;
+        StartCoroutine(MissileGenerating());
+    }
+
+    IEnumerator MissileGenerating()
+    {
+
+        _waitControl = true;
+        yield return Helpers.WaitHelper(Random.Range(2, 4));
+        MissileGenFunction();
+        _waitControl = false;
+    }
+
+    private void MoveFunction()
     {
         transform.Translate(Vector3.right * Time.deltaTime * 1);
         Helpers.OutofBorderCheck(transform, gameObject);
-        if (!waitController) StartCoroutine( MissleGenerating());
     }
-
-   IEnumerator MissleGenerating()
+    private void MissileGenFunction()
     {
         GameObject missile;
-        waitController = true;
-       yield return  Helpers.WaitHelper(Random.Range(2, 4));
-        float randomAngle = Random.Range(2*Mathf.PI/3, Mathf.PI)*(Random.Range(0,2)*2-1);
+        float randomAngle = Random.Range(2 * Mathf.PI / 3, Mathf.PI) * (Random.Range(0, 2) * 2 - 1);
         missile = Instantiate(_missile, transform.position, Helpers.ZRotationChange(randomAngle));
         missile.transform.parent = _container.transform;
         missile.tag = "EnemyMissile";
-        waitController = false;
+
     }
 
-   
 }
